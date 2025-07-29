@@ -1,7 +1,10 @@
-const book = require('../models/books');
+const Book = require('../models/books');
+const fs = require('fs')
 
 exports.getAllBooks = (req, res) => {
-
+    Book.find()
+        .then(book => res.status(200).json(book))
+        .catch(error => res.status(400).json({error}))
 };
 
 exports.getBook = (req, res) => {
