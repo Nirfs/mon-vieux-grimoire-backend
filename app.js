@@ -17,6 +17,7 @@ mongoose.connect(MONGO_URL,
 
 app.use(cors())
 app.use(express.json())
+app.use('/images', express.static('images'))
 
 app.use('/api/books', booksRoutes);
 app.use('/api/auth', authRoutes);
