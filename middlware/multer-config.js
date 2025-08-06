@@ -4,13 +4,6 @@ const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
 
-const MIME_TYPES = {
-  'image/jpg': 'jpg',
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
-
 // 1. Stockage en mémoire (buffer)
 const storage = multer.memoryStorage();
 
@@ -25,7 +18,7 @@ const imageOptimizer = async (req, res, next) => {
   if (!req.file) return next();
 
   try {
-    const extension = MIME_TYPES[req.file.mimetype] || 'webp';
+    const extension = 'webp'
     const filename = `${Date.now()}-${req.auth?.userId || 'guest'}.${extension}`;
     const outputPath = path.join('images', filename);
 
