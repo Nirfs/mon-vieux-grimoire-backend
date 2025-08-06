@@ -6,9 +6,9 @@ const cors = require('cors')
 const authRoutes = require('./routes/auth');
 const booksRoutes = require('./routes/books');
 
-const MONGO_URL = process.env.MONGO_URL;
+const MONGO_URL ="mongodb+srv://KevP:nLbLDsGf1NXQ81FL@cluster0.3peluto.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-mongoose.connect(MONGO_URL,
+mongoose.connect(MONGO_URL || process.env.MONGO_URL,
     { useNewUrlParser: true,
     useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
