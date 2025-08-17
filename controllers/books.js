@@ -1,5 +1,6 @@
 const Book = require('../models/Books');
 const fs = require('fs');
+const path = require('path');
 
 // Obtenir tous les livres
 exports.getAllBooks = (req, res) => {
@@ -84,11 +85,23 @@ exports.modifyBook = (req, res) => {
         return res.status(401).json({ message: 'Non autorisé' });
       }
 
+      // Mémoriser l'ancienne image si on en met une nouvelle
+      let oldImageFilename = null;
+      if (req.file && book.imageUrl) {
+        oldImageFilename = book.imageUrl.split('/images/')[1];
+      }
+
       Book.updateOne({ _id: req.params.id }, { ...bookObject, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Modifié avec succès' }))
-        .catch(error => res.status(401).json(error));
-    })
-    .catch(error => res.status(400).json({ error }));
+        .then(() => {
+                  // Si nouvelle images on supprime l'ancienne
+                  if (oldImageFilename) {
+                    fs.promises.unlink(path.join('images', oldImageFilename)).catch(() => {});
+                  }
+                  return res.status(200).json({ message: 'Modifié avec succès' });
+                })
+                .catch(error => res.status(401).json(error));
+            })
+            .catch(error => res.status(400).json({ error }));
 };
 
 // Supprimer un livre

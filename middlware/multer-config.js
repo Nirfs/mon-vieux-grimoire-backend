@@ -2,27 +2,30 @@
 const multer = require("multer");
 const sharp = require("sharp");
 const path = require("path");
-const fs = require("fs");
 
-// 1. Stockage en mémoire (buffer)
 const storage = multer.memoryStorage();
 
-// 2. Middleware multer
 const upload = multer({
   storage,
+  //limite la taille du fichier a 5mo
   limits: { fileSize: 5 * 1024 * 1024 },
+  //Accepte un seul fichier dans le formulaire image '/lib/common - bodyFormData.append('image', data.file...;
 }).single('image');
 
-// 3. Middleware d'optimisation
+
 const imageOptimizer = async (req, res, next) => {
+  //Si rien envoyé on passe au suivant
   if (!req.file) return next();
 
   try {
+    //format forcé en webp
     const extension = 'webp'
-    const filename = `${Date.now()}-${req.auth?.userId || 'guest'}.${extension}`;
+    //nom du ficher composé de la date et du userId
+    const filename = `${Date.now()}-${req.auth?.userId}.${extension}`;
     const outputPath = path.join('images', filename);
 
-    // Sharp traitement
+    // Sharp traite l'image depuis le buffer, fais les changement 
+    // et les save dans le dossier images
     await sharp(req.file.buffer)
       .resize({ width: 600 })
       .toFormat(extension, { quality: 80 })
