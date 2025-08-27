@@ -3,6 +3,16 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 exports.signUp = (req, res) => {
+
+    const { email, password } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email obligatoire' });
+    }
+    if (!password) {
+        return res.status(400).json({ message: 'Mot de passe obligatoire' });
+    }
+
     //hash du mot de passe envoyé par l'utilisateur -> 10 passe
     bcrypt.hash(req.body.password, 10)
         //On enregistre le hash a la place du mdp original
